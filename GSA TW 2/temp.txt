@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .container { display: flex; }
+        .sidebar { width: 200px; padding: 20px; background-color: #f8f9fa; height: 100vh; }
+        .main-content { flex-grow: 1; padding: 20px; }
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-bottom: 20px;
+            
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border-bottom: 1px solid #ddd; padding: 10px; text-align: left; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Company Logo" class="logo-image">
+            </div>
+            <p>My Tasks</p>
+            <p>My Profile</p>
+            <form action="{{ url_for('logout') }}" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-sm btn-secondary">Logout</button>
+            </form>            
+        </div>
+
+        <div class="main-content">
+            <h2>Task Dashboard</h2>
+            <a href="{{ url_for('add_task') }}" class="btn">Add Task</a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Assigned By</th>
+                        <th>Status</th>
+                    </tr>
+                    <tbody>
+                        {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.name }}</td>
+                            <td>{{ task.datetime.strftime('%d %b %Y') }}</td>
+                            <td>{{ task.datetime.strftime('%I:%M %p') }}</td>
+                            <td>{{ task.assigned_to.username }}</td>
+                            <td>{{ task.status if task.status else 'Pending' }}</td>
+                            <td>
+                                <form action="{{ url_for('update_task_status', task_id=task.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-sm {% if task.status == 'Completed' %}btn-secondary{% else %}btn-primary{% endif %}">
+                                        {% if task.status == 'Completed' %}Mark as Pending{% else %}Mark as Complete{% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+    </div>
+                <h1>Testing</h1>
+</body>
+</html>

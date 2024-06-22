@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - Dashboard</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-image: url'{{ url_for('static', filename='/images/1702012079487498.jpg') }}';
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .container { 
+            display: flex; 
+            min-height: 100vh;
+        }
+        .sidebar { 
+            width: 200px; 
+            padding: 20px; 
+            background-color: rgba(248, 249, 250, 0.9); 
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content { 
+            flex-grow: 1; 
+            padding: 20px; 
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th, td { 
+            border-bottom: 1px solid #ddd; 
+            padding: 10px; 
+            text-align: left; 
+        }
+        .btn { 
+            display: inline-block; 
+            padding: 10px 20px; 
+            background-color: #007bff; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            border: none;
+            cursor: pointer;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .logout-form {
+            margin-top: auto;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='/images/1702012079487498.jpg') }}" alt="Company Logo" class="logo-image">
+            </div>
+            <p>My Tasks</p>
+            <p>My Profile</p>
+            <form action="{{ url_for('logout') }}" method="POST" class="logout-form">
+                <button type="submit" class="btn btn-sm btn-secondary">Logout</button>
+            </form>            
+        </div>
+
+        <div class="main-content">
+            <h2>Task Dashboard</h2>
+            <a href="{{ url_for('add_task') }}" class="btn">Add Task</a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Assigned By</th>
+                        <th>Status</th>
+                    </tr>
+                    <tbody>
+                        {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.name }}</td>
+                            <td>{{ task.datetime.strftime('%d %b %Y') }}</td>
+                            <td>{{ task.datetime.strftime('%I:%M %p') }}</td>
+                            <td>{{ task.assigned_to.username }}</td>
+                            <td>{{ task.status if task.status else 'Pending' }}</td>
+                            <td>
+                                <form action="{{ url_for('update_task_status', task_id=task.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-sm {% if task.status == 'Completed' %}btn-secondary{% else %}btn-primary{% endif %}">
+                                        {% if task.status == 'Completed' %}Mark as Pending{% else %}Mark as Complete{% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+    </div>
+                <h1>Testing</h1>
+</body>
+</html>
